@@ -14,6 +14,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,19 +33,20 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: |
-            platform-tools
-            platforms;android-35
-            build-tools;35.0.0
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
 
       - name: Extract Android project
+        shell: bash
         run: |
+          set -e
           unzip -q BOOSTER_SINYAL_PRO_source.zip -d unpacked
           test -f unpacked/BOOSTER_SINYAL_PRO/app/build.gradle
           test -f unpacked/BOOSTER_SINYAL_PRO/app/src/main/AndroidManifest.xml
 
       - name: Build debug APK
+        shell: bash
         run: |
+          set -e
           cd unpacked/BOOSTER_SINYAL_PRO
           gradle --no-daemon assembleDebug
 
@@ -55,3 +57,4 @@ jobs:
           path: unpacked/BOOSTER_SINYAL_PRO/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 7
+          
